@@ -13,21 +13,24 @@ const  BetScreen = () => {
     const parsedBetData = JSON.parse(data);
     setStake(parsedBetData.stake)
     setGameTarget(parsedBetData.gameTarget)
+    setTotalWinnings(parsedBetData.totalWinnings)
    }, [])
 
-    const [odd, setOdd] = useState('');
+    const [odd, setOdd] = useState(0);
     const [won, setWon] = useState('');
-    const [lost, setLost] = useState('');
+    const [lost, setLost] = useState(0);
     const [stake, setStake] = useState(0);
     const [totalLost, setTotalLost] = useState(0)
     const [gameTarget, setGameTarget] = useState(0)
+    const [totalWinnings, setTotalWinnings] = useState(0)
 
     const wonFunc = async() => {
         setWon("Won")
         const data = localStorage.getItem('hahaBet');
         const parsedBetData = JSON.parse(data);
-        let totalWinnings = parsedBetData.totalWinnings + stake;
+        let totalWinnings = Math.round(parseInt(parsedBetData.totalWinnings)  + parseInt(parsedBetData.gameTarget));
         setTotalLost(0)
+        setTotalWinnings(totalWinnings)
         if(data) {
           const formData = JSON.stringify({
             totalWinnings: totalWinnings,
@@ -46,7 +49,7 @@ const  BetScreen = () => {
       setLost("Lost")
       const data = localStorage.getItem('hahaBet');
       const parsedBetData = JSON.parse(data);
-      let totalLost = parsedBetData.totalLost + parsedBetData.stake;
+      let totalLost = Math.round(parseInt(parsedBetData.totalLost) + parseInt(parsedBetData.stake));
       setTotalLost(totalLost)
       if(data) {
         const formData = JSON.stringify({
@@ -64,18 +67,50 @@ const  BetScreen = () => {
 
     }
 
-    const calculateBet = () => {
+    const calculateBet = async () => {
       if(won == "Won"){
-        // formula 
-        // gameTarget / 1 - odd
-        let stake = gameTarget / (odd - 1);
-         setStake(stake)
+        const data = localStorage.getItem('hahaBet');
+        const parsedBetData = JSON.parse(data);
+        let newStake = Math.round(parseInt(parsedBetData.gameTarget) / (parseFloat(odd) - 1));
+        setTotalLost(totalLost)
+        if(data) {
+          const formData = JSON.stringify({
+            totalLost: 0,
+            totalWinnings: Math.round(parseInt(parsedBetData.totalWinnings) + parseInt(parsedBetData.gameTarget)), 
+            targetAmount: parsedBetData.targetAmount,
+            dailyTarget: parsedBetData.dailyTarget,
+            gameTarget: parsedBetData.gameTarget,
+            isConfigured: parsedBetData.isConfigured,
+            odds: odd,
+            stake: newStake
+          });
+          await localStorage.setItem('hahaBet', formData);
+        }
+        setStake(newStake)
+        setLost("")
+        setWon("")
           
       }else if(lost == "Lost"){
-         // formula 
-        // gameTarget + totalLost / 1 - odd
-        let stake = (gameTarget + totalLost) / (odd - 1);
-        setStake(stake)
+        const data = localStorage.getItem('hahaBet');
+        const parsedBetData = JSON.parse(data);
+        let newStake = Math.round((parseInt(parsedBetData.gameTarget) + parseInt(parsedBetData.totalLost)) / (parseFloat(odd) - 1));
+        setTotalLost(totalLost)
+        if(data) {
+          const formData = JSON.stringify({
+            totalLost: parseInt(parsedBetData.totalLost),
+            totalWinnings: parsedBetData.totalWinnings, 
+            targetAmount: parsedBetData.targetAmount,
+            dailyTarget: parsedBetData.dailyTarget,
+            gameTarget: parsedBetData.gameTarget,
+            isConfigured: parsedBetData.isConfigured,
+            odds: odd,
+            stake: newStake
+          });
+          await localStorage.setItem('hahaBet', formData);
+        }
+        setStake(newStake)
+        setLost("")
+        setWon("")
       }
     }
 
@@ -85,12 +120,12 @@ const  BetScreen = () => {
       <main className={styles.main}>
         <h1 className={styles.title}>
         Amount to stake <br />
-          <span>&#8358;{stake}</span>
+          <span>&#8358;{Intl.NumberFormat().format(stake)}</span>
         </h1>
 
         <p className={styles.description}>
             Total winning for today!
-            <span>{stake}</span>
+            <span style={{ color: 'green', fontWeight: 'bold', fontSize: 30}}>(&#8358;{Intl.NumberFormat().format(totalWinnings)})</span>
         </p>
 
         <div className={styles.grid}>
@@ -107,9 +142,10 @@ const  BetScreen = () => {
                     placeholder="Enter odd"
                     style={{ height: 30}}
                     value={odd}
-                    onChange={(e) => calculateBet()}
+                    onChange={(e) => setOdd(e.target.value)}
                     />
                 </div>
+                <button onClick={() => calculateBet()}>Calculate now</button>
            </>)}
           
            <br />

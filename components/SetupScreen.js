@@ -11,14 +11,14 @@ const  SetupScreen = () => {
 
 
     const [odd, setOdd] = useState('');
-    const [dailyTarget, setDailyTarget] = useState("")
-    const [gameTarget, setGameTarget] = useState("")
+    const [dailyTarget, setDailyTarget] = useState(0)
+    const [gameTarget, setGameTarget] = useState(0)
     const [totalWinnings, setTotalWinnings] = useState('');
     const [totalLost, setTotalLost] = useState('');
 
     const saveSetup = async (e) => {
         const betData = localStorage.getItem('hahaBet');
-        let stake = gameTarget / (odd - 1);
+        let stake = Math.round(gameTarget / (odd - 1));
         if(betData) {
           const formData = JSON.stringify({
             targetAmount: 0,
