@@ -38,6 +38,9 @@ const  SetupScreen = () => {
     return (
         <div className={styles.container}>
       <main className={styles.main}>
+      <Head>
+          <title>HahaBet | Configure screen</title>
+        </Head>
         <h1 className={styles.title}>
         Welcome to  <a href="https://nextjs.org">HahaBet</a> <br />
         </h1>

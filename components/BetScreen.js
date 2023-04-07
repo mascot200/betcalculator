@@ -118,6 +118,9 @@ const  BetScreen = () => {
     return (
         <div className={styles.container}>
       <main className={styles.main}>
+      <Head>
+          <title>HahaBet | Bet calculator screen</title>
+        </Head>
         <h1 className={styles.title}>
         Amount to stake <br />
           <span>&#8358;{Intl.NumberFormat().format(stake)}</span>
@@ -131,8 +134,8 @@ const  BetScreen = () => {
         <div className={styles.grid}>
            {won == "" && lost == "" ? (
            <>
-            <button onClick={(e) => wonFunc()} style={{ backgroundColor: 'green', width: 100, borderRadius: 2}}>Won</button>
-            <button onClick={(e) => lostFunc()} style={{ backgroundColor: 'red', width: 100, borderRadius: 2}}>Lost</button>
+            <div onClick={(e) => wonFunc()} style={{ backgroundColor: 'green', width: 100, height: 30, textAlign: 'center', paddingTop: '2%', borderRadius: 5}}>Won</div>
+            <button onClick={(e) => lostFunc()} style={{ backgroundColor: 'red', width: 100, height: 30, textAlign: 'center', marginLeft: 10, paddingTop: '2%', borderRadius: 5}}>Lost</button>
            </>) : (
            <>
             <div className="mb-3" style={{ marginLeft: 5}}>
@@ -145,7 +148,7 @@ const  BetScreen = () => {
                     onChange={(e) => setOdd(e.target.value)}
                     />
                 </div>
-                <button onClick={() => calculateBet()}>Calculate now</button>
+                <div style={{ backgroundColor: 'green', width: 150, height: 30, textAlign: 'center', marginLeft: 10, paddingTop: '2%', borderRadius: 5}} onClick={() => calculateBet()}>Calculate now</div>
            </>)}
           
            <br />
